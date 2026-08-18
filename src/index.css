@@ -1,0 +1,295 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --color-primary: #0054a6;
+  --color-primary-dark: #003d7a;
+  --color-secondary: #5ad2f2;
+  --color-secondary-deep: #2bb8de;
+  --color-ink: #00315f;
+  --color-ink-mid: #4a6f8f;
+  --color-ink-soft: #e8f7fc;
+  --color-sky: #f3fbfe;
+  --color-cream: #f3fbfe;
+  --color-line: #d5eef6;
+  --color-card: #ffffff;
+  --color-gold: #c4920a;
+  --color-gold-deep: #a67c08;
+  --color-success: #16a34a;
+  --color-success-soft: #dcfce7;
+}
+
+html,
+body,
+#root {
+  min-height: 100svh;
+  margin: 0;
+  background: #f3fbfe;
+  color: #00315f;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.quest-bg {
+  background:
+    radial-gradient(900px 420px at 50% -10%, rgba(90, 210, 242, 0.35), transparent 55%),
+    radial-gradient(640px 360px at 110% 8%, rgba(0, 84, 166, 0.12), transparent 50%),
+    radial-gradient(480px 280px at -10% 80%, rgba(90, 210, 242, 0.22), transparent 50%),
+    #f3fbfe;
+}
+
+.id-card {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(165deg, #ffffff 0%, #e8f7fc 58%, #d6f3fb 100%) padding-box,
+    linear-gradient(135deg, #0054a6, #5ad2f2, #0054a6) border-box;
+  border: 2px solid transparent;
+  color: #00315f;
+  animation: quest-card-in 0.7s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+
+.id-card::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.7) 48%,
+    transparent 62%
+  );
+  transform: translateX(-120%);
+  animation: card-shine 5.5s ease-in-out 0.8s infinite;
+}
+
+.id-card-press {
+  transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.38s ease;
+}
+
+.id-card-press:active {
+  transform: scale(0.975);
+  box-shadow: 0 6px 16px rgba(0, 84, 166, 0.16);
+}
+
+.id-photo-ring {
+  animation: photo-glow 2.8s ease-in-out infinite;
+}
+
+.illu-coin {
+  animation: coin-bob 2.8s ease-in-out infinite;
+}
+
+.illu-twinkle {
+  animation: star-twinkle 2.4s ease-in-out infinite;
+}
+
+.quest-badge {
+  position: relative;
+  overflow: hidden;
+  animation: badge-in 0.55s cubic-bezier(0.34, 1.6, 0.64, 1) both;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.28s ease;
+}
+
+.quest-badge:active {
+  transform: scale(0.92);
+}
+
+.quest-badge-pop {
+  display: inline-flex;
+  animation: badge-tap 0.48s cubic-bezier(0.34, 1.7, 0.64, 1);
+}
+
+.quest-badge::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.85) 50%, transparent 65%);
+  transform: translateX(-140%);
+  animation: badge-shine 3.6s ease-in-out infinite;
+}
+
+.quest-trophy {
+  animation: trophy-wobble 2.8s ease-in-out infinite;
+  transform-origin: 50% 70%;
+}
+
+.quest-badge:nth-child(2) {
+  animation-delay: 0.34s;
+}
+
+.quest-badge:nth-child(2)::before,
+.quest-badge:nth-child(2) .quest-trophy {
+  animation-delay: 0.45s;
+}
+
+.quest-badge:nth-child(3) {
+  animation-delay: 0.46s;
+}
+
+.quest-badge:nth-child(3)::before,
+.quest-badge:nth-child(3) .quest-trophy {
+  animation-delay: 0.9s;
+}
+
+@keyframes quest-card-in {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.94);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes card-shine {
+  0%,
+  55% {
+    transform: translateX(-120%);
+  }
+  75%,
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes photo-glow {
+  0%,
+  100% {
+    filter: brightness(1);
+    transform: scale(1);
+  }
+  50% {
+    filter: brightness(1.25);
+    transform: scale(1.03);
+  }
+}
+
+@keyframes coin-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-10deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(10deg);
+  }
+}
+
+@keyframes star-twinkle {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.88;
+  }
+  40% {
+    transform: scale(1.22) rotate(14deg);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(0.9) rotate(-10deg);
+    opacity: 0.7;
+  }
+}
+
+@keyframes badge-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) rotate(-10deg);
+  }
+  72% {
+    opacity: 1;
+    transform: scale(1.1) rotate(3deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes badge-tap {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  32% {
+    transform: scale(0.86) rotate(-4deg);
+  }
+  68% {
+    transform: scale(1.12) rotate(3deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes badge-shine {
+  0%,
+  62% {
+    transform: translateX(-140%);
+  }
+  82%,
+  100% {
+    transform: translateX(140%);
+  }
+}
+
+@keyframes trophy-wobble {
+  0%,
+  72%,
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+  78% {
+    transform: rotate(-14deg) scale(1.18);
+  }
+  86% {
+    transform: rotate(12deg) scale(1.12);
+  }
+  93% {
+    transform: rotate(-6deg) scale(1.04);
+  }
+}
+
+.xp-fill {
+  background: linear-gradient(90deg, #5ad2f2, #0054a6);
+}
+
+.illu-float {
+  animation: illu-float 3.6s ease-in-out infinite;
+}
+
+@keyframes illu-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .id-card,
+  .id-card::after,
+  .id-photo-ring,
+  .illu-float,
+  .illu-coin,
+  .illu-twinkle,
+  .quest-badge,
+  .quest-badge::before,
+  .quest-trophy,
+  .quest-badge-pop {
+    animation: none !important;
+  }
+
+  .id-card-press,
+  .quest-badge,
+  .banner-slideshow .flex {
+    transition: none !important;
+  }
+}
