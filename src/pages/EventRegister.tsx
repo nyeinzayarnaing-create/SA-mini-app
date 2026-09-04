@@ -48,6 +48,7 @@ export function EventRegister() {
 
   function submit(eventSubmit: FormEvent) {
     eventSubmit.preventDefault()
+    if (!item) return
     if (!phone.trim()) {
       setError('Please enter a phone number, or turn on the KBZPay toggle to auto-fill.')
       return

@@ -111,8 +111,8 @@ export function readActions(): Record<string, ActivityStatus> {
   }
 }
 
-function withSingleApproved(actions: Record<string, ActivityStatus>) {
-  const next = { ...actions, a6: 'approved' as const }
+function withSingleApproved(actions: Record<string, ActivityStatus>): Record<string, ActivityStatus> {
+  const next: Record<string, ActivityStatus> = { ...actions, a6: 'approved' }
   for (const id of Object.keys(next)) {
     if (id !== 'a6' && next[id] === 'approved') delete next[id]
   }
@@ -132,7 +132,7 @@ export function setAction(id: string, value: boolean | ActivityStatus) {
   return next
 }
 
-export function resolveStatus(item: Announcement, stored?: ActivityStatus): ActivityStatus | null {
+export function resolveStatus(_item: Announcement, stored?: ActivityStatus): ActivityStatus | null {
   if (!stored || stored === 'closed') return null
   return stored
 }
