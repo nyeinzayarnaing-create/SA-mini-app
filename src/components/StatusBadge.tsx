@@ -11,7 +11,11 @@ export function StatusBadge({
   category?: AnnouncementCategory
 }) {
   const jobApplied = category === 'job' && (status === 'pending' || status === 'approved')
-  const label = jobApplied ? 'Applied' : ACTIVITY_STATUS_LABEL[status]
+  const label = jobApplied
+    ? 'Applied'
+    : category === 'job' && status === 'closed'
+      ? 'Apply Closed'
+      : ACTIVITY_STATUS_LABEL[status]
   const tone = jobApplied ? 'bg-[#DCFCE7] text-[#166534]' : ACTIVITY_STATUS_CLASS[status]
 
   return (

@@ -26,6 +26,9 @@ export type Ambassador = {
   certificates?: ProfileDocument[]
   banner?: string
   hallTag?: HallTag
+  /** All Hall of Frame categories this ambassador belongs to (3–4 possible). */
+  hallTags?: HallTag[]
+  onboardingCount?: number
 }
 
 export type HallTag = 'top-onboarder' | 'youth-creator' | 'internship' | 'permanent'
@@ -57,6 +60,7 @@ export type School = {
   status: SchoolStatus
   type: SchoolType
   banner: string
+  logo: string
   about: string
   founded: string
   focus: string
@@ -85,6 +89,7 @@ export type RegistrationInfo = {
   age: string
   batch: string
   university: string
+  trainingRegion?: string
   sameKbzPhone: boolean
   phone: string
   address: string
@@ -116,8 +121,11 @@ export type Announcement = {
   companyLogo?: string
   employmentType?: 'Part-time' | 'Full-time'
   industry?: string
+  responsibilities?: string[]
   requirements?: string[]
   benefits?: string[]
+  descriptionFileName?: string
+  descriptionFileUrl?: string
 }
 
 export type MarketingBanner = {

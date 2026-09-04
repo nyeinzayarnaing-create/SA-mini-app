@@ -3,14 +3,14 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AmbassadorRow } from '../components/AmbassadorRow'
 import { emptyFilters, FilterSheet, type AmbassadorFilters } from '../components/FilterSheet'
+import { LeaderboardRow } from '../components/LeaderboardRow'
 import { TrophyIllu } from '../components/Illustrations'
 import { useProfile } from '../context/ProfileContext'
 import { ambassadors } from '../data/mock'
-import { HALL_TAG_LABEL } from '../lib/hall'
-import type { HallTag } from '../types'
+import { competitionRanks, HALL_TAG_LABEL, hallTagsOf } from '../lib/hall'
+import type { Ambassador, HallTag } from '../types'
 
-const TABS: { id: 'all' | HallTag; label: string }[] = [
-  { id: 'all', label: 'All' },
+const TABS: { id: HallTag; label: string }[] = [
   { id: 'top-onboarder', label: HALL_TAG_LABEL['top-onboarder'] },
   { id: 'youth-creator', label: HALL_TAG_LABEL['youth-creator'] },
   { id: 'internship', label: HALL_TAG_LABEL.internship },
@@ -19,14 +19,17 @@ const TABS: { id: 'all' | HallTag; label: string }[] = [
 
 export function HallOfFrame() {
   const { user } = useProfile()
-  const [tab, setTab] = useState<(typeof TABS)[number]['id']>('all')
+  const [tab, setTab] = useState<HallTag>('top-onboarder')
   const [query, setQuery] = useState('')
   const [filters, setFilters] = useState<AmbassadorFilters>(emptyFilters)
   const [sheetOpen, setSheetOpen] = useState(false)
 
   const members = useMemo(
-    () => ambassadors.filter((person) => person.id !== user.id && person.hallTag),
-    [user.id],
+    () =>
+      ambassadors.filter(
+        (person) => person.id !== user.id && hallTagsOf(person).includes(tab),
+      ),
+    [user.id, tab],
   )
 
   const colleges = useMemo(
@@ -42,10 +45,9 @@ export function HallOfFrame() {
     [members],
   )
 
-  const shown = useMemo(() => {
+  const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     return members.filter((person) => {
-      if (tab !== 'all' && person.hallTag !== tab) return false
       const matchesQuery =
         !q || person.name.toLowerCase().includes(q) || person.id.toLowerCase().includes(q)
       const matchesCollege =
@@ -55,7 +57,18 @@ export function HallOfFrame() {
       const matchesBatch = filters.saBatch.length === 0 || filters.saBatch.includes(person.saBatch)
       return matchesQuery && matchesCollege && matchesRegion && matchesBatch
     })
-  }, [members, tab, query, filters])
+  }, [members, query, filters])
+
+  const leaderboard = useMemo(() => {
+    if (tab !== 'top-onboarder') return []
+    const sorted = [...filtered].sort((a, b) => {
+      const countDiff = (b.onboardingCount ?? 0) - (a.onboardingCount ?? 0)
+      if (countDiff !== 0) return countDiff
+      return a.name.localeCompare(b.name)
+    })
+    const ranks = competitionRanks(sorted.map((person) => person.onboardingCount ?? 0))
+    return sorted.map((person, index) => ({ person, rank: ranks[index]! }))
+  }, [tab, filtered])
 
   const filtersActive =
     filters.collegeName.length > 0 || filters.trainingRegion.length > 0 || filters.saBatch.length > 0
@@ -81,7 +94,7 @@ export function HallOfFrame() {
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">Campus Quest</p>
           <h1 className="text-xl font-extrabold text-ink">Hall of Frame</h1>
           <p className="mt-1 text-xs text-ink-mid">
-            {shown.length} {tab === 'all' ? 'ambassadors' : HALL_TAG_LABEL[tab]}
+            {filtered.length} {HALL_TAG_LABEL[tab]}
           </p>
         </div>
         <TrophyIllu className="illu-float h-14 w-14" />
@@ -108,10 +121,7 @@ export function HallOfFrame() {
       </div>
 
       <div className="flex items-center gap-2">
-        <form
-          onSubmit={(event) => event.preventDefault()}
-          className="relative min-w-0 flex-1"
-        >
+        <form onSubmit={(event) => event.preventDefault()} className="relative min-w-0 flex-1">
           <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/35" />
           <input
             value={query}
@@ -155,17 +165,27 @@ export function HallOfFrame() {
         </div>
       ) : null}
 
-      <section className="mt-4 space-y-2">
-        {shown.map((person) => (
-          <Link
-            key={person.id}
-            to={`/ambassadors/${encodeURIComponent(person.id)}`}
-            className="block w-full text-left"
-          >
-            <AmbassadorRow ambassador={person} showHallTag />
-          </Link>
-        ))}
-        {shown.length === 0 ? (
+      <section className="mt-4 space-y-3">
+        {tab === 'top-onboarder'
+          ? leaderboard.map(({ person, rank }, index) => (
+              <Link
+                key={person.id}
+                to={`/ambassadors/${encodeURIComponent(person.id)}`}
+                className="block w-full text-left"
+              >
+                <LeaderboardRow ambassador={person} rank={rank} index={index} preferTag={tab} />
+              </Link>
+            ))
+          : filtered.map((person: Ambassador) => (
+              <Link
+                key={person.id}
+                to={`/ambassadors/${encodeURIComponent(person.id)}`}
+                className="block w-full text-left"
+              >
+                <AmbassadorRow ambassador={person} showHallTag preferTag={tab} />
+              </Link>
+            ))}
+        {filtered.length === 0 ? (
           <p className="rounded-2xl border border-dashed border-line bg-white p-6 text-center text-sm text-ink-mid">
             {searching ? 'No ambassadors match that search.' : 'No ambassadors in this category yet.'}
           </p>

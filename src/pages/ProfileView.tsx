@@ -87,7 +87,7 @@ export function ProfileView() {
         <KpiAchievement />
       </div>
 
-      <CertificateList documents={user.certificates ?? []} badges={user.badges} />
+      <CertificateList documents={user.certificates ?? []} badges={user.badges} ambassador={user} />
     </main>
   )
 }

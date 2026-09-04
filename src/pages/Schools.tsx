@@ -5,7 +5,7 @@ import { schools } from '../data/mock'
 import type { SchoolType } from '../types'
 
 const TABS: { id: 'all' | SchoolType; label: string }[] = [
-  { id: 'all', label: 'All Schools' },
+  { id: 'all', label: 'All College' },
   { id: 'government', label: 'Government' },
   { id: 'private', label: 'Private' },
 ]

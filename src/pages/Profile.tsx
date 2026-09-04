@@ -21,7 +21,7 @@ export function Profile() {
         <h1 className="text-xl font-extrabold text-ink">Your profile</h1>
       </header>
 
-      <ProfileCard ambassador={user} action="view-profile" showAchievements={false} />
+      <ProfileCard ambassador={user} action="view-profile" />
 
       {saved ? (
         <p className="mt-3 rounded-xl bg-secondary/20 px-3 py-2 text-xs font-semibold text-primary">

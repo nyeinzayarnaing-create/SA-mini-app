@@ -1,8 +1,45 @@
 import type { Ambassador, Announcement, Award, HallTag, KpiAchievement, MarketingBanner, School } from '../types'
 import { ambassadorCertificates } from '../lib/certificates'
 
-export function avatarUrl(seed: string, bg = '5ad2f2') {
-  return `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(seed)}&backgroundColor=${bg}`
+const AVATAR_PHOTOS = [
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&h=256&q=80',
+  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=256&h=256&q=80',
+  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=256&h=256&q=80',
+  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=256&h=256&q=80',
+  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=256&h=256&q=80',
+  'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=256&h=256&q=80',
+  'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=256&h=256&q=80',
+  'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=256&h=256&q=80',
+  'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=256&h=256&q=80',
+  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&h=256&q=80',
+  'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=256&h=256&q=80',
+  'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=256&h=256&q=80',
+] as const
+
+function hashSeed(seed: string) {
+  let hash = 0
+  for (let i = 0; i < seed.length; i += 1) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0
+  return hash
+}
+
+export function avatarUrl(seed: string, _bg = '5ad2f2') {
+  return AVATAR_PHOTOS[hashSeed(seed) % AVATAR_PHOTOS.length]!
+}
+
+/** Offline-safe fallback when remote avatar fails to load. */
+export function avatarFallbackUrl(seed: string, bg = '5ad2f2') {
+  const spaced = seed
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/[^a-zA-Z]+/g, ' ')
+    .trim()
+  const parts = spaced.split(/\s+/).filter(Boolean)
+  const initials = (
+    (parts[0]?.[0] ?? seed[0] ?? '?') + (parts[1]?.[0] ?? parts[0]?.[1] ?? '')
+  )
+    .toUpperCase()
+    .slice(0, 2)
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><rect width="128" height="128" rx="64" fill="#${bg}"/><text x="64" y="68" text-anchor="middle" font-family="Outfit, system-ui, sans-serif" font-size="44" font-weight="700" fill="#00315f">${initials}</text></svg>`
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
 }
 
 export function ambassadorAge(person: Pick<Ambassador, 'age' | 'year'> & { dateOfBirth?: string }) {
@@ -40,6 +77,7 @@ export const schools: School[] = [
     status: 'Active',
     type: 'government',
     banner: '/schools/historic.jpg',
+    logo: '/schools/logos/uoy.svg',
     about:
       'Myanmar’s oldest university and a flagship Campus Quest partner. Ambassadors here run onboarding quests around Convocation Hall, faculty clubs, and city-wide student outreach.',
     founded: '1878',
@@ -58,6 +96,7 @@ export const schools: School[] = [
     status: 'Active',
     type: 'government',
     banner: '/schools/tech.jpg',
+    logo: '/schools/logos/ytu.svg',
     about:
       'A leading engineering campus for STEM ambassadors. The YTU squad hosts tech talks, lab tours, and KBZPay digital-literacy booths for first-year students.',
     founded: '1924',
@@ -76,6 +115,7 @@ export const schools: School[] = [
     status: 'Active',
     type: 'government',
     banner: '/schools/courtyard.jpg',
+    logo: '/schools/logos/mu.svg',
     about:
       'The Upper Myanmar hub for Campus Quest. Ambassadors coordinate regional training, campus markets, and peer mentoring across Mandalay faculties.',
     founded: '1925',
@@ -94,6 +134,7 @@ export const schools: School[] = [
     status: 'Inactive',
     type: 'government',
     banner: '/schools/courtyard.jpg',
+    logo: '/schools/logos/dagon.svg',
     about:
       'A large arts-and-science campus that previously ran SA recruitment fairs. Partnership is paused while the next training batch is planned.',
     founded: '1993',
@@ -112,6 +153,7 @@ export const schools: School[] = [
     status: 'Active',
     type: 'government',
     banner: '/schools/tech.jpg',
+    logo: '/schools/logos/ucsy.svg',
     about:
       'Home of the digital creator squad. UCSY ambassadors lead coding clinics, app demos, and Hall of Frame content shoots for Campus Quest.',
     founded: '1988',
@@ -130,6 +172,7 @@ export const schools: School[] = [
     status: 'Active',
     type: 'government',
     banner: '/schools/courtyard.jpg',
+    logo: '/schools/logos/eyu.svg',
     about:
       'A growing East Yangon partner campus. Ambassadors cover Thanlyin outreach, freshman welcome weeks, and volunteer drives with nearby townships.',
     founded: '2000',
@@ -148,6 +191,7 @@ export const schools: School[] = [
     status: 'Inactive',
     type: 'government',
     banner: '/schools/medical.jpg',
+    logo: '/schools/logos/um1.svg',
     about:
       'A medical campus partner focused on health-literacy quests. The current SA cohort is on hold pending the next academic-year kickoff.',
     founded: '1927',
@@ -166,6 +210,7 @@ export const schools: School[] = [
     status: 'Active',
     type: 'private',
     banner: '/schools/tech.jpg',
+    logo: '/schools/logos/miit.svg',
     about:
       'A private IT institute partnering with Campus Quest on innovation days, intern pipelines, and Mandalay tech-community events.',
     founded: '2015',
@@ -184,6 +229,7 @@ export const schools: School[] = [
     status: 'Active',
     type: 'private',
     banner: '/schools/private.jpg',
+    logo: '/schools/logos/sfu.svg',
     about:
       'A private business campus where ambassadors run career talks, startup booths, and KBZPay campus markets for commerce students.',
     founded: '2010',
@@ -202,6 +248,7 @@ export const schools: School[] = [
     status: 'Active',
     type: 'private',
     banner: '/schools/private.jpg',
+    logo: '/schools/logos/sti.svg',
     about:
       'A compact private campus with a hands-on SA team. Ambassadors support orientation weeks, English clubs, and partner-school visits.',
     founded: '2006',
@@ -220,6 +267,7 @@ export const schools: School[] = [
     status: 'Inactive',
     type: 'private',
     banner: '/schools/private.jpg',
+    logo: '/schools/logos/mic.svg',
     about:
       'A private college partner currently inactive while Campus Quest reviews the next ambassador intake and campus event calendar.',
     founded: '2015',
@@ -258,14 +306,14 @@ export const currentUser: Ambassador = {
   }),
 }
 
-const HALL_ASSIGN: Record<string, HallTag> = {
-  'SA-2026-0311': 'top-onboarder',
-  'SA-2026-0577': 'youth-creator',
-  'SA-2026-0901': 'internship',
-  'SA-2026-0128': 'permanent',
-  'SA-2026-0664': 'internship',
-  'SA-2026-0440': 'youth-creator',
-  'SA-2026-0788': 'permanent',
+const HALL_ASSIGN: Record<string, HallTag[]> = {
+  'SA-2026-0311': ['top-onboarder', 'internship', 'permanent'],
+  'SA-2026-0577': ['youth-creator', 'internship'],
+  'SA-2026-0901': ['internship', 'youth-creator', 'top-onboarder'],
+  'SA-2026-0128': ['permanent', 'internship', 'youth-creator', 'top-onboarder'],
+  'SA-2026-0664': ['internship', 'permanent'],
+  'SA-2026-0440': ['youth-creator'],
+  'SA-2026-0788': ['permanent', 'youth-creator', 'internship'],
 }
 
 const coreAmbassadors: Ambassador[] = ([
@@ -288,7 +336,9 @@ const coreAmbassadors: Ambassador[] = ([
     email: 'hein.min@campusquest.edu',
     joinDate: '03 Sep 2024',
     status: 'Active',
-    badges: ['Highest On-Boarding', 'Recruiter'],
+    badges: ['Highest Onboarding', 'Internship', 'Permanent'],
+    onboardingCount: 47,
+    hallTags: ['top-onboarder', 'internship', 'permanent'],
   },
   {
     id: 'SA-2026-0577',
@@ -328,7 +378,8 @@ const coreAmbassadors: Ambassador[] = ([
     email: 'naychi.lin@campusquest.edu',
     joinDate: '04 Mar 2026',
     status: 'Active',
-    badges: ['Builder'],
+    badges: ['Internship', 'Youth Creator', 'Highest Onboarding'],
+    onboardingCount: 18,
   },
   {
     id: 'SA-2026-0128',
@@ -348,7 +399,8 @@ const coreAmbassadors: Ambassador[] = ([
     email: 'aung.koko@campusquest.edu',
     joinDate: '21 Nov 2024',
     status: 'Inactive',
-    badges: ['Mentor'],
+    badges: ['Permanent', 'Internship', 'Youth Creator', 'Highest Onboarding'],
+    onboardingCount: 15,
   },
   {
     id: 'SA-2026-0664',
@@ -410,66 +462,95 @@ const coreAmbassadors: Ambassador[] = ([
     status: 'Active',
     badges: ['Tech Lead'],
   },
-] as Ambassador[]).map((person) => ({
-  ...person,
-  certificates: person.certificates ?? ambassadorCertificates(person),
-  hallTag: person.hallTag ?? HALL_ASSIGN[person.id],
-}))
+] as Ambassador[]).map((person) => {
+  const hallTags = person.hallTags ?? HALL_ASSIGN[person.id] ?? (person.hallTag ? [person.hallTag] : undefined)
+  return {
+    ...person,
+    certificates: person.certificates ?? ambassadorCertificates(person),
+    hallTags,
+    hallTag: person.hallTag ?? hallTags?.[0],
+  }
+})
 
 export const ambassadors: Ambassador[] = [...coreAmbassadors, ...buildHallAmbassadors()]
 
 function buildHallAmbassadors(): Ambassador[] {
-  const tags: HallTag[] = ['top-onboarder', 'youth-creator', 'internship', 'permanent']
-  const names = [
-    'Min Thu Aung',
-    'Ei Mon Kyaw',
-    'Soe Wai Lin',
-    'Phyu Phyu Win',
-    'Htet Aung Shine',
-    'Nandar Moe',
-    'Zaw Lin Htut',
-    'Khin Myat Noe',
-    'Ye Min Oo',
-    'Su Su Hlaing',
-    'Pyae Phyo Naing',
-    'Moe Moe Khaing',
+  // Distinct top 3 for gamified leaderboard (1 person each); ties only below.
+  const onboarders = [
+    { name: 'Min Thu Aung', count: 44 },
+    { name: 'Htet Aung Shine', count: 38 },
+    { name: 'Ye Min Oo', count: 31 },
+    { name: 'Phyo Zaw Win', count: 28 },
+    { name: 'Aye Chan Moe', count: 28 },
+    { name: 'Lin Htet Oo', count: 24 },
+    { name: 'Thin Zar Aung', count: 22 },
+    { name: 'Kaung Myat', count: 19 },
   ]
+  const creators = ['Ei Mon Kyaw', 'Nandar Moe', 'Su Su Hlaing', 'Myat Noe Oo', 'Hnin Wai Hlaing']
+  const interns = ['Soe Wai Lin', 'Zaw Lin Htut', 'Pyae Phyo Naing', 'Thu Zar Win', 'Aung Kyaw Min']
+  const permanents = ['Phyu Phyu Win', 'Khin Myat Noe', 'Moe Moe Khaing', 'Sandi Oo', 'Kyaw Swar']
+  const bg = ['5ad2f2', 'c5f0fa', '8de4f7', 'b3eaf8'] as const
   const ranks: Ambassador['rank'][] = ['Gold', 'Platinum', 'Silver', 'Gold']
   const years = ['3rd Year', '4th Year', '2nd Year', '3rd Year']
-  const badges: Record<HallTag, string[]> = {
-    'top-onboarder': ['Top On-Boarder', 'Recruiter'],
-    'youth-creator': ['Youth Creator', 'Storyteller'],
-    internship: ['Internship', 'Rising Star'],
-    permanent: ['Permanent', 'Mentor'],
-  }
-  const bg = ['5ad2f2', 'c5f0fa', '8de4f7', 'b3eaf8'] as const
 
-  return names.map((name, index) => {
-    const school = schools[index % schools.length]
-    const tag = tags[index % tags.length]
-    const person: Ambassador = {
-      id: `SA-2026-${1101 + index}`,
-      name,
-      photo: avatarUrl(name.replaceAll(' ', ''), bg[index % bg.length]),
-      schoolId: school.id,
-      schoolName: school.name,
-      trainingRegion: school.region,
-      saBatch: `SA Batch ${2024 + (index % 3)}`,
-      rank: ranks[index % ranks.length],
-      level: 8 + (index % 8),
-      xp: 900 + index * 120,
-      xpToNext: 1400 + index * 80,
-      year: years[index % years.length],
-      age: 19 + (index % 5),
-      phone: `+95 9 ${400 + index} ${100 + index} ${200 + index}`,
-      email: `${name.toLowerCase().replaceAll(' ', '.')}@campusquest.edu`,
-      joinDate: `${10 + (index % 18)} Mar ${2024 + (index % 3)}`,
-      status: index === 7 ? 'Inactive' : 'Active',
-      badges: badges[tag],
-      hallTag: tag,
-    }
-    return { ...person, certificates: ambassadorCertificates(person) }
-  })
+  const groups: { tag: HallTag; people: { name: string; count?: number }[] }[] = [
+    { tag: 'top-onboarder', people: onboarders },
+    { tag: 'youth-creator', people: creators.map((name) => ({ name })) },
+    { tag: 'internship', people: interns.map((name) => ({ name })) },
+    { tag: 'permanent', people: permanents.map((name) => ({ name })) },
+  ]
+
+  const labelByTag: Record<HallTag, string> = {
+    'top-onboarder': 'Highest Onboarding',
+    'youth-creator': 'Youth Creator',
+    internship: 'Internship',
+    permanent: 'Permanent',
+  }
+
+  let id = 1101
+  const result: Ambassador[] = []
+
+  for (const group of groups) {
+    group.people.forEach((entry, index) => {
+      const school = schools[index % schools.length]
+      const extraTags: HallTag[] =
+        index % 4 === 0
+          ? ['internship', 'permanent']
+          : index % 4 === 1
+            ? ['youth-creator', 'internship', 'permanent']
+            : index % 4 === 2
+              ? ['permanent']
+              : []
+      const hallTags = [...new Set<HallTag>([group.tag, ...extraTags])]
+      const person: Ambassador = {
+        id: `SA-2026-${id}`,
+        name: entry.name,
+        photo: avatarUrl(entry.name.replaceAll(' ', ''), bg[index % bg.length]),
+        schoolId: school.id,
+        schoolName: school.name,
+        trainingRegion: school.region,
+        saBatch: `SA Batch ${2024 + (index % 3)}`,
+        rank: ranks[index % ranks.length],
+        level: 8 + (index % 8),
+        xp: 900 + index * 120,
+        xpToNext: 1400 + index * 80,
+        year: years[index % years.length],
+        age: 19 + (index % 5),
+        phone: `+95 9 ${400 + (id % 100)} ${100 + (id % 50)} ${200 + (id % 80)}`,
+        email: `${entry.name.toLowerCase().replaceAll(' ', '.')}@campusquest.edu`,
+        joinDate: `${10 + (index % 18)} Mar ${2024 + (index % 3)}`,
+        status: 'Active',
+        badges: hallTags.map((tag) => labelByTag[tag]),
+        hallTag: group.tag,
+        hallTags,
+        onboardingCount: entry.count,
+      }
+      id += 1
+      result.push({ ...person, certificates: ambassadorCertificates(person) })
+    })
+  }
+
+  return result
 }
 
 export const awards: Award[] = buildAwards()
@@ -546,10 +627,10 @@ export const announcements: Announcement[] = [
     category: 'event',
     title: 'Campus Voice open mic',
     body: 'Share your onboarding story, practice your pitch, and earn the Campus Voice badge.',
-    date: '25 Aug 2026',
+    date: '12 Sep 2026',
     time: '5:00 PM – 7:00 PM',
     location: 'University of Mandalay',
-    closeDate: '24 Aug 2026',
+    closeDate: '20 Sep 2026',
     isNew: true,
     photo:
       'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&h=640&q=80',
@@ -581,18 +662,18 @@ export const announcements: Announcement[] = [
   {
     id: 'a2',
     category: 'event',
-    title: 'Youth Creator submissions close 20 Aug',
-    body: 'Upload your campus story clip before 20 August, 6pm and join the screening night.',
-    date: '10 Aug 2026',
+    title: 'Youth Creator submissions close 25 Sep',
+    body: 'Upload your campus story clip before 25 September, 6pm and join the screening night.',
+    date: '18 Sep 2026',
     time: '6:00 PM',
     location: 'Hall of Frame studio',
-    closeDate: '20 Aug 2026',
+    closeDate: '25 Sep 2026',
     isNew: true,
     photo:
       'https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=1200&h=640&q=80',
     details:
       'Screening night for Youth Creator clips. Submit your campus story, then watch the shortlist with other ambassadors and the Hall of Frame jury.',
-    highlights: ['Submit by 20 Aug, 6pm', 'Live screening and voting', 'Winner framed in Hall of Frame'],
+    highlights: ['Submit by 25 Sep, 6pm', 'Live screening and voting', 'Winner framed in Hall of Frame'],
     tags: ['Creator', 'Screening', 'Award'],
     goingCount: 28,
   },
@@ -601,10 +682,10 @@ export const announcements: Announcement[] = [
     category: 'event',
     title: 'SA meetup this Friday',
     body: 'Train together, share onboarding tips, and unlock the Campus Voice badge.',
-    date: '15 Aug 2026',
+    date: '11 Sep 2026',
     time: '4:00 PM – 6:00 PM',
     location: 'Dagon University',
-    closeDate: '14 Aug 2026',
+    closeDate: '15 Sep 2026',
     isNew: true,
     photo:
       'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&h=640&q=80',
@@ -637,10 +718,10 @@ export const announcements: Announcement[] = [
     category: 'volunteer',
     title: 'Orientation week greeters',
     body: 'Welcome new students at partner-school gates and help them complete onboarding.',
-    date: '18 Aug 2026',
+    date: '14 Sep 2026',
     time: '8:00 AM – 12:00 PM',
     location: 'UCSY campus',
-    closeDate: '17 Aug 2026',
+    closeDate: '22 Sep 2026',
     isNew: true,
     photo:
       'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1200&h=640&q=80',
@@ -673,10 +754,10 @@ export const announcements: Announcement[] = [
     category: 'volunteer',
     title: 'Peer tutoring for first-years',
     body: 'Volunteer two hours a week to coach first-year students through SA basics.',
-    date: '22 Aug 2026',
+    date: '20 Sep 2026',
     time: 'Weekends',
     location: 'Mandalay University',
-    closeDate: '21 Aug 2026',
+    closeDate: '28 Sep 2026',
     isNew: false,
     photo:
       'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&h=640&q=80',
@@ -691,17 +772,25 @@ export const announcements: Announcement[] = [
     category: 'job',
     title: 'Campus coordinator',
     body: 'Lead weekly SA huddles, track onboarding KPIs, and support partner-school visits.',
-    date: '11 Aug 2026',
+    date: '05 Sep 2026',
     time: '15 hrs / week',
     location: 'Yangon',
-    closeDate: '25 Aug 2026',
+    closeDate: '30 Sep 2026',
     isNew: true,
+    photo:
+      'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&h=640&q=80',
     companyName: 'Campus Quest',
     companyLogo: 'CQ',
     employmentType: 'Part-time',
     industry: 'Education',
     details:
       'Lead weekly Student Ambassador huddles, track onboarding KPIs, and support partner-school visits across Yangon campuses. You will work closely with the Campus Quest crew to keep weekly targets on track.',
+    responsibilities: [
+      'Run weekly Student Ambassador huddles',
+      'Track onboarding KPIs and weekly targets',
+      'Coordinate partner-school campus visits',
+      'Share updates with the Campus Quest crew',
+    ],
     requirements: [
       'Active Student Ambassador in good standing',
       'Able to commit 15 hours per week',
@@ -714,23 +803,33 @@ export const announcements: Announcement[] = [
       'Campus Quest coordinator certificate',
       'Priority for Hall of Frame features',
     ],
+    descriptionFileName: 'Campus-Coordinator-Job-Description.pdf',
+    descriptionFileUrl: '/jobs/j1-description.pdf',
   },
   {
     id: 'j2',
     category: 'job',
     title: 'Youth Creator intern',
     body: 'Shoot and edit campus stories for Hall of Frame and the Home banner.',
-    date: '09 Aug 2026',
+    date: '08 Sep 2026',
     time: '3-month intern',
     location: 'Remote + Yangon',
-    closeDate: '22 Aug 2026',
+    closeDate: '10 Oct 2026',
     isNew: true,
+    photo:
+      'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&h=640&q=80',
     companyName: 'Hall of Frame Studio',
     companyLogo: 'HF',
     employmentType: 'Full-time',
     industry: 'Media',
     details:
       'Shoot and edit campus stories for Hall of Frame and the Home banner. You will capture SA moments, cut short clips, and help the studio ship weekly creator content.',
+    responsibilities: [
+      'Capture campus stories and SA moments',
+      'Edit short clips for Hall of Frame',
+      'Support Home banner creator content',
+      'Collaborate with studio editors weekly',
+    ],
     requirements: [
       'Basic video shooting and editing skills',
       'Own or can borrow a smartphone with 1080p camera',
@@ -743,6 +842,8 @@ export const announcements: Announcement[] = [
       'Credit on published campus stories',
       'Equipment access at the studio',
     ],
+    descriptionFileName: 'Youth-Creator-Intern-Job-Description.pdf',
+    descriptionFileUrl: '/jobs/j2-description.pdf',
   },
   {
     id: 'j3',
@@ -754,12 +855,20 @@ export const announcements: Announcement[] = [
     location: 'University of Yangon',
     closeDate: '18 Aug 2026',
     isNew: false,
+    photo:
+      'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&h=640&q=80',
     companyName: 'KBZ Bank',
     companyLogo: 'KBZ',
     employmentType: 'Part-time',
     industry: 'Banking',
     details:
       'Help new students complete forms, scan IDs, and log referrals during peak onboarding weeks at the University of Yangon desk. You will be the first smile students meet when they join Campus Quest.',
+    responsibilities: [
+      'Greet students at the onboarding desk',
+      'Help complete forms and scan IDs',
+      'Log referrals during peak weeks',
+      'Keep the desk queue moving smoothly',
+    ],
     requirements: [
       'Friendly, patient, and detail-oriented',
       'Available for shift-based hours',
@@ -772,6 +881,8 @@ export const announcements: Announcement[] = [
       'Meal voucher on duty days',
       'Letter of recommendation after 8 weeks',
     ],
+    descriptionFileName: 'Onboarding-Desk-Assistant-Job-Description.pdf',
+    descriptionFileUrl: '/jobs/j3-description.pdf',
   },
 ]
 

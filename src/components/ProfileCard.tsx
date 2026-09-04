@@ -1,19 +1,13 @@
 import { Link } from 'react-router-dom'
 import { profileBanner } from '../lib/profileBanner'
 import type { Ambassador } from '../types'
-import { TrophyTag } from './TrophyTag'
 
 type Props = {
   ambassador: Ambassador
   action?: 'status' | 'view-profile'
-  showAchievements?: boolean
 }
 
-export function ProfileCard({
-  ambassador,
-  action = 'status',
-  showAchievements = true,
-}: Props) {
+export function ProfileCard({ ambassador, action = 'status' }: Props) {
   const active = ambassador.status === 'Active'
   const banner = profileBanner(ambassador)
   const bio = [ambassador.schoolName, ambassador.trainingRegion, ambassador.saBatch]
@@ -53,14 +47,6 @@ export function ProfileCard({
           <Link to="/profile/view" className="mt-3 inline-block text-[13px] font-bold text-primary">
             View profile
           </Link>
-        ) : null}
-
-        {showAchievements && ambassador.badges.length > 0 ? (
-          <div className="mt-4 flex flex-wrap justify-center gap-1.5">
-            {ambassador.badges.map((badge) => (
-              <TrophyTag key={badge} label={badge} />
-            ))}
-          </div>
         ) : null}
       </div>
     </section>

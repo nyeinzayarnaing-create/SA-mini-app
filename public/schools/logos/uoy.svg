@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="University of Yangon">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0054A6"/>
+      <stop offset="100%" stop-color="#5AD2F2"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="url(#g)"/>
+  <circle cx="64" cy="64" r="42" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="3"/>
+  <path d="M64 28 88 40v18c0 18-14 30-24 34-10-4-24-16-24-34V40z" fill="none" stroke="#ffffff" stroke-opacity="0.45" stroke-width="3" stroke-linejoin="round"/>
+  <text x="64" y="76" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="800" fill="#ffffff">UY</text>
+</svg>

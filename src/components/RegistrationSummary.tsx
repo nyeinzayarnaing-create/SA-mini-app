@@ -15,20 +15,18 @@ export function RegistrationSummary({
 
       <div className="px-4">
         <p className="pt-3 text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A93A6]">Ambassador details</p>
-        <InfoRow label="Full name" value={info.fullName} />
-        <InfoRow label="ID" value={info.ambassadorId} />
+        <InfoRow label="Student name" value={info.fullName} />
+        <InfoRow label="SA ID" value={info.ambassadorId} />
         <InfoRow label="Age" value={info.age} />
-        <InfoRow label="Batch" value={info.batch} />
-        <InfoRow label="University" value={info.university} />
+        <InfoRow label="SA Batch" value={info.batch} />
+        <InfoRow label="College Name" value={info.university} />
+        {info.trainingRegion ? <InfoRow label="Training Region" value={info.trainingRegion} /> : null}
       </div>
 
       <div className="border-t border-[#EEEFF3] px-4 pb-1">
         <p className="pt-3 text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A93A6]">Contact information</p>
         <InfoRow label="Phone number" value={info.phone} />
         {info.email ? <InfoRow label="Email address" value={info.email} /> : null}
-        {info.state ? <InfoRow label="State" value={info.state} /> : null}
-        {info.town ? <InfoRow label="Town" value={info.town} /> : null}
-        {info.township ? <InfoRow label="Township" value={info.township} /> : null}
         <InfoRow label="Current address" value={info.address} stacked />
       </div>
       {info.cvFileName || info.interest ? (

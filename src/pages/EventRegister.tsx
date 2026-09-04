@@ -23,9 +23,6 @@ export function EventRegister() {
   const [sameKbzPhone, setSameKbzPhone] = useState(false)
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState(user.email)
-  const [stateName, setStateName] = useState('')
-  const [town, setTown] = useState('')
-  const [township, setTownship] = useState('')
   const [address, setAddress] = useState('')
   const [cvFileName, setCvFileName] = useState('')
   const [interest, setInterest] = useState('')
@@ -60,10 +57,6 @@ export function EventRegister() {
         setError('Please enter your email address.')
         return
       }
-      if (!stateName.trim() || !town.trim() || !township.trim()) {
-        setError('Please enter state, town, and township.')
-        return
-      }
       if (!cvFileName) {
         setError('Please upload your CV.')
         return
@@ -83,15 +76,13 @@ export function EventRegister() {
       age: String(ambassadorAge(user)),
       batch: user.saBatch,
       university: user.schoolName,
+      trainingRegion: user.trainingRegion,
       sameKbzPhone,
       phone: phone.trim(),
       address: address.trim(),
       ...(isJob
         ? {
             email: email.trim(),
-            state: stateName.trim(),
-            town: town.trim(),
-            township: township.trim(),
             cvFileName,
             interest: interest.trim(),
           }
@@ -166,11 +157,12 @@ export function EventRegister() {
           <h2 className="text-sm font-extrabold text-ink">Ambassador details</h2>
           <p className="mt-1 text-[11px] text-ink-mid">Filled from your profile. You can’t edit these here.</p>
           <div className="mt-3 space-y-3">
-            <DisabledField label="Full name" value={user.name} />
-            <DisabledField label="ID" value={user.id} />
+            <DisabledField label="Student name" value={user.name} />
+            <DisabledField label="SA ID" value={user.id} />
             <DisabledField label="Age" value={String(ambassadorAge(user))} />
-            <DisabledField label="Batch" value={user.saBatch} />
-            <DisabledField label="University" value={user.schoolName} />
+            <DisabledField label="SA Batch" value={user.saBatch} />
+            <DisabledField label="College Name" value={user.schoolName} />
+            <DisabledField label="Training Region" value={user.trainingRegion} />
           </div>
         </section>
 
@@ -211,48 +203,16 @@ export function EventRegister() {
           </label>
 
           {isJob ? (
-            <>
-              <label className="mt-3 block">
-                <span className="text-[11px] font-semibold uppercase tracking-wide text-ink-mid">Email address</span>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter email address"
-                  className="mt-1 h-11 w-full rounded-xl border border-line bg-sky px-3 text-sm text-ink"
-                />
-              </label>
-              <label className="mt-3 block">
-                <span className="text-[11px] font-semibold uppercase tracking-wide text-ink-mid">State</span>
-                <input
-                  type="text"
-                  value={stateName}
-                  onChange={(e) => setStateName(e.target.value)}
-                  placeholder="Enter state"
-                  className="mt-1 h-11 w-full rounded-xl border border-line bg-sky px-3 text-sm text-ink"
-                />
-              </label>
-              <label className="mt-3 block">
-                <span className="text-[11px] font-semibold uppercase tracking-wide text-ink-mid">Town</span>
-                <input
-                  type="text"
-                  value={town}
-                  onChange={(e) => setTown(e.target.value)}
-                  placeholder="Enter town"
-                  className="mt-1 h-11 w-full rounded-xl border border-line bg-sky px-3 text-sm text-ink"
-                />
-              </label>
-              <label className="mt-3 block">
-                <span className="text-[11px] font-semibold uppercase tracking-wide text-ink-mid">Township</span>
-                <input
-                  type="text"
-                  value={township}
-                  onChange={(e) => setTownship(e.target.value)}
-                  placeholder="Enter township"
-                  className="mt-1 h-11 w-full rounded-xl border border-line bg-sky px-3 text-sm text-ink"
-                />
-              </label>
-            </>
+            <label className="mt-3 block">
+              <span className="text-[11px] font-semibold uppercase tracking-wide text-ink-mid">Email address</span>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter email address"
+                className="mt-1 h-11 w-full rounded-xl border border-line bg-sky px-3 text-sm text-ink"
+              />
+            </label>
           ) : null}
 
           <label className="mt-3 block">
@@ -316,7 +276,7 @@ export function EventRegister() {
           type="submit"
           className="flex h-12 w-full items-center justify-center rounded-full bg-primary text-[15px] font-bold text-white shadow-[0_8px_18px_rgba(0,84,166,0.28)]"
         >
-          {isJob ? 'Apply Now' : 'Submit registration'}
+          {isJob ? 'Apply Now' : 'Submit'}
         </button>
       </form>
         </>

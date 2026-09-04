@@ -1,6 +1,5 @@
 import { ChevronRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { useSeen } from '../context/SeenContext'
 import { announcements } from '../data/mock'
 import type { Announcement, AnnouncementCategory } from '../types'
 import { CategoryChip } from './AnnouncementHeader'
@@ -9,8 +8,7 @@ import { MegaphoneIllu } from './Illustrations'
 const CATEGORIES: AnnouncementCategory[] = ['event', 'volunteer', 'job']
 
 export function AnnouncementList() {
-  const { showNew } = useSeen()
-  const latest = pickLatest(announcements, 5)
+  const latest = pickLatest(announcements, 3)
 
   return (
     <section>
@@ -31,7 +29,7 @@ export function AnnouncementList() {
               <Link to="/announcements" className="flex items-center gap-2 px-4 py-3">
                 <CategoryChip category={item.category} />
                 <p className="min-w-0 flex-1 truncate text-sm font-semibold">{item.title}</p>
-                {showNew(item.isNew, item.id) ? (
+                {item.isNew ? (
                   <span className="shrink-0 rounded-full bg-primary px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-white">
                     New
                   </span>

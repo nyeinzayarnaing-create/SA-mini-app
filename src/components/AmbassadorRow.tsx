@@ -1,24 +1,26 @@
 import { GraduationCap, MapPin, Users } from 'lucide-react'
-import { HALL_TAG_LABEL } from '../lib/hall'
-import type { Ambassador } from '../types'
-import { TrophyTag } from './TrophyTag'
+import type { Ambassador, HallTag } from '../types'
+import { AvatarImage } from './AvatarImage'
+import { HallBadgeStack } from './HallBadgeStack'
 
 export function AmbassadorRow({
   ambassador,
   showHallTag = false,
+  preferTag,
 }: {
   ambassador: Ambassador
   showHallTag?: boolean
+  preferTag?: HallTag
 }) {
   const active = ambassador.status === 'Active'
-  const tag = showHallTag ? ambassador.hallTag : undefined
 
   return (
     <article className="rounded-2xl border border-line bg-white p-4 shadow-[0_6px_18px_rgba(0,84,166,0.06)]">
       <div className="flex items-start gap-3">
-        <img
+        <AvatarImage
           src={ambassador.photo}
           alt={ambassador.name}
+          seed={ambassador.name}
           className="h-14 w-14 shrink-0 rounded-2xl bg-ink-soft object-cover ring-1 ring-secondary/60"
         />
         <div className="min-w-0 flex-1">
@@ -33,9 +35,9 @@ export function AmbassadorRow({
             </span>
           </div>
           <p className="mt-0.5 font-mono text-[12px] font-semibold text-primary">{ambassador.id}</p>
-          {tag ? (
+          {showHallTag ? (
             <p className="mt-1.5">
-              <TrophyTag label={HALL_TAG_LABEL[tag]} />
+              <HallBadgeStack ambassador={ambassador} prefer={preferTag} />
             </p>
           ) : null}
           <p className="mt-1 flex items-center gap-1 text-[13px] font-semibold text-ink-mid">

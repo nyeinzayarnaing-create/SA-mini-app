@@ -12,10 +12,23 @@ function initialsColor(hex: string) {
 }
 
 export function SchoolMark({ school, size = 'md' }: { school: School; size?: 'md' | 'lg' }) {
-  const box = size === 'lg' ? 'h-16 w-16 text-[15px] rounded-[18px]' : 'h-14 w-14 text-sm rounded-2xl'
+  const box = size === 'lg' ? 'h-16 w-16 rounded-[18px]' : 'h-14 w-14 rounded-2xl'
+
+  if (school.logo) {
+    return (
+      <img
+        src={school.logo}
+        alt={`${school.name} logo`}
+        className={`shrink-0 object-cover ring-1 ring-line ${box}`}
+      />
+    )
+  }
+
   return (
     <div
-      className={`flex shrink-0 items-center justify-center font-extrabold ${box}`}
+      className={`flex shrink-0 items-center justify-center font-extrabold ${
+        size === 'lg' ? 'h-16 w-16 text-[15px] rounded-[18px]' : 'h-14 w-14 text-sm rounded-2xl'
+      }`}
       style={{ backgroundColor: school.accent, color: initialsColor(school.accent) }}
       aria-hidden
     >

@@ -14,6 +14,27 @@ export function certificatePreview(title: string, holder: string, year: string) 
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
 }
 
+const BADGE_DATE_OFFSETS_DAYS = [0, 45, 90, 140, 200, 260]
+
+/** Shift a display date like "03 Sep 2024" by N days. */
+export function shiftDisplayDate(base: string, days: number): string {
+  const parsed = Date.parse(base)
+  if (Number.isNaN(parsed)) return base
+  const date = new Date(parsed)
+  date.setDate(date.getDate() + days)
+  return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+}
+
+export function badgeEarnedOn(
+  person: Pick<Ambassador, 'joinDate' | 'certificates' | 'badges'>,
+  badge: string,
+  index = 0,
+): string {
+  const fromCert = person.certificates?.find((doc) => doc.kind === 'award' && doc.title === badge)
+  if (fromCert?.issuedOn) return fromCert.issuedOn
+  return shiftDisplayDate(person.joinDate, BADGE_DATE_OFFSETS_DAYS[index % BADGE_DATE_OFFSETS_DAYS.length]!)
+}
+
 export function ambassadorCertificates(
   person: Pick<Ambassador, 'id' | 'name' | 'joinDate' | 'badges'>,
 ): ProfileDocument[] {
@@ -26,14 +47,20 @@ export function ambassadorCertificates(
       fileName: 'SA-Training-Certificate.svg',
       fileUrl: certificatePreview('Student Ambassador Training', person.name, person.joinDate),
     },
-    ...person.badges.map((badge, index) => ({
-      id: `${person.id}-badge-${index}`,
-      kind: 'award' as const,
-      title: badge,
-      issuedOn: person.joinDate,
-      fileName: `${badge.replaceAll(' ', '-')}.svg`,
-      fileUrl: certificatePreview(badge, person.name, person.joinDate),
-    })),
+    ...person.badges.map((badge, index) => {
+      const issuedOn = shiftDisplayDate(
+        person.joinDate,
+        BADGE_DATE_OFFSETS_DAYS[index % BADGE_DATE_OFFSETS_DAYS.length]!,
+      )
+      return {
+        id: `${person.id}-badge-${index}`,
+        kind: 'award' as const,
+        title: badge,
+        issuedOn,
+        fileName: `${badge.replaceAll(' ', '-')}.svg`,
+        fileUrl: certificatePreview(badge, person.name, issuedOn),
+      }
+    }),
   ]
 }
 
