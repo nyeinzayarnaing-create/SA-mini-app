@@ -29,9 +29,34 @@ export type Ambassador = {
   /** All Hall of Frame categories this ambassador belongs to (3–4 possible). */
   hallTags?: HallTag[]
   onboardingCount?: number
+  /**
+   * Highest Onboarding achievement title (under badge on Hall card).
+   * Independent of leaderboard rank — e.g. rank 5 can hold 1st award.
+   */
+  onboardingAwardTitle?: OnboardingAwardTitle
+  /** Youth Creator achievement title (under badge on Hall card). */
+  youthCreatorAwardTitle?: YouthCreatorAwardTitle
+  /** When each Hall badge was earned (display date strings). */
+  badgeGotDates?: Partial<Record<HallBadgeName, string>>
 }
 
 export type HallTag = 'top-onboarder' | 'youth-creator' | 'internship' | 'permanent'
+
+export type HallBadgeName =
+  | 'Highest Onboarding'
+  | 'Youth Creator'
+  | 'Internship'
+  | 'Permanent'
+
+export type OnboardingAwardTitle =
+  | '1st Top Highest Onboarding Award'
+  | '2nd Top Highest Onboarding Award'
+  | '3rd Top Highest Onboarding Award'
+
+export type YouthCreatorAwardTitle =
+  | 'Top View Magnet Winner'
+  | 'Most Engaging Creator Winner'
+  | 'Most Creative Content Winner'
 
 export type ProfileDocumentKind = 'certificate' | 'award'
 

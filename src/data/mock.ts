@@ -1,5 +1,6 @@
 import type { Ambassador, Announcement, Award, HallTag, KpiAchievement, MarketingBanner, School } from '../types'
 import { ambassadorCertificates } from '../lib/certificates'
+import { HALL_TAG_LABEL } from '../lib/hall'
 
 const AVATAR_PHOTOS = [
   'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&h=256&q=80',
@@ -294,15 +295,23 @@ export const currentUser: Ambassador = {
   email: 'sumyat.aung@campusquest.edu',
   joinDate: '12 Jan 2025',
   status: 'Active',
-  badges: ['Top Onboarder', 'Gold Rank', 'Campus Voice'],
+  badges: ['Highest Onboarding', 'Youth Creator'],
   qualification: 'B.A. International Relations',
   currentAddress: 'No. 12, University Avenue, Kamayut Township, Yangon',
   permanentAddress: 'No. 8, 35th Street, Chanayethazan Township, Mandalay',
+  onboardingCount: 25,
+  hallTags: ['top-onboarder', 'youth-creator'],
+  onboardingAwardTitle: '2nd Top Highest Onboarding Award',
+  youthCreatorAwardTitle: 'Top View Magnet Winner',
+  badgeGotDates: {
+    'Highest Onboarding': '18 Apr 2025',
+    'Youth Creator': '28 May 2025',
+  },
   certificates: ambassadorCertificates({
     id: 'SA-2026-0842',
     name: 'Su Myat Aung',
     joinDate: '12 Jan 2025',
-    badges: ['Top Onboarder', 'Gold Rank', 'Campus Voice'],
+    badges: ['Highest Onboarding', 'Youth Creator'],
   }),
 }
 
@@ -338,7 +347,13 @@ const coreAmbassadors: Ambassador[] = ([
     status: 'Active',
     badges: ['Highest Onboarding', 'Internship', 'Permanent'],
     onboardingCount: 47,
+    onboardingAwardTitle: '1st Top Highest Onboarding Award',
     hallTags: ['top-onboarder', 'internship', 'permanent'],
+    badgeGotDates: {
+      'Highest Onboarding': '10 Nov 2024',
+      Internship: '03 Sep 2024',
+      Permanent: '15 Mar 2025',
+    },
   },
   {
     id: 'SA-2026-0577',
@@ -358,7 +373,12 @@ const coreAmbassadors: Ambassador[] = ([
     email: 'hnin.ei@campusquest.edu',
     joinDate: '18 Feb 2025',
     status: 'Active',
-    badges: ['Youth Creator', 'Storyteller'],
+    badges: ['Youth Creator', 'Internship'],
+    youthCreatorAwardTitle: 'Top View Magnet Winner',
+    badgeGotDates: {
+      'Youth Creator': '22 Feb 2025',
+      Internship: '18 Feb 2025',
+    },
   },
   {
     id: 'SA-2026-0901',
@@ -380,6 +400,12 @@ const coreAmbassadors: Ambassador[] = ([
     status: 'Active',
     badges: ['Internship', 'Youth Creator', 'Highest Onboarding'],
     onboardingCount: 18,
+    youthCreatorAwardTitle: 'Most Engaging Creator Winner',
+    badgeGotDates: {
+      Internship: '04 Mar 2026',
+      'Youth Creator': '20 Apr 2026',
+      'Highest Onboarding': '12 May 2026',
+    },
   },
   {
     id: 'SA-2026-0128',
@@ -401,6 +427,13 @@ const coreAmbassadors: Ambassador[] = ([
     status: 'Inactive',
     badges: ['Permanent', 'Internship', 'Youth Creator', 'Highest Onboarding'],
     onboardingCount: 15,
+    youthCreatorAwardTitle: 'Most Creative Content Winner',
+    badgeGotDates: {
+      Internship: '21 Nov 2024',
+      Permanent: '01 Jun 2025',
+      'Youth Creator': '12 Aug 2025',
+      'Highest Onboarding': '03 Sep 2025',
+    },
   },
   {
     id: 'SA-2026-0664',
@@ -420,7 +453,11 @@ const coreAmbassadors: Ambassador[] = ([
     email: 'may.thiri@campusquest.edu',
     joinDate: '09 Jun 2026',
     status: 'Active',
-    badges: ['Rookie'],
+    badges: ['Internship', 'Permanent'],
+    badgeGotDates: {
+      Internship: '09 Jun 2026',
+      Permanent: '01 Aug 2026',
+    },
   },
   {
     id: 'SA-2026-0440',
@@ -440,7 +477,11 @@ const coreAmbassadors: Ambassador[] = ([
     email: 'kyaw.zin@campusquest.edu',
     joinDate: '15 Oct 2025',
     status: 'Inactive',
-    badges: ['Campus Voice'],
+    badges: ['Youth Creator'],
+    youthCreatorAwardTitle: 'Most Creative Content Winner',
+    badgeGotDates: {
+      'Youth Creator': '02 Nov 2025',
+    },
   },
   {
     id: 'SA-2026-0788',
@@ -460,42 +501,78 @@ const coreAmbassadors: Ambassador[] = ([
     email: 'thiri.nwe@campusquest.edu',
     joinDate: '02 Jan 2025',
     status: 'Active',
-    badges: ['Tech Lead'],
+    badges: ['Permanent', 'Youth Creator', 'Internship'],
+    youthCreatorAwardTitle: 'Most Creative Content Winner',
+    badgeGotDates: {
+      Internship: '02 Jan 2025',
+      'Youth Creator': '14 Feb 2025',
+      Permanent: '01 Jun 2025',
+    },
   },
 ] as Ambassador[]).map((person) => {
   const hallTags = person.hallTags ?? HALL_ASSIGN[person.id] ?? (person.hallTag ? [person.hallTag] : undefined)
-  return {
+  const badges = hallTags?.length
+    ? [...new Set(hallTags.map((tag) => HALL_TAG_LABEL[tag]))]
+    : person.badges.filter((badge) =>
+        ['Highest Onboarding', 'Youth Creator', 'Internship', 'Permanent'].includes(badge),
+      )
+  const normalized = {
     ...person,
-    certificates: person.certificates ?? ambassadorCertificates(person),
     hallTags,
     hallTag: person.hallTag ?? hallTags?.[0],
+    badges,
+  }
+  return {
+    ...normalized,
+    certificates: person.certificates ?? ambassadorCertificates(normalized),
   }
 })
 
 export const ambassadors: Ambassador[] = [...coreAmbassadors, ...buildHallAmbassadors()]
 
 function buildHallAmbassadors(): Ambassador[] {
-  // Distinct top 3 for gamified leaderboard (1 person each); ties only below.
-  const onboarders = [
-    { name: 'Min Thu Aung', count: 44 },
-    { name: 'Htet Aung Shine', count: 38 },
-    { name: 'Ye Min Oo', count: 31 },
-    { name: 'Phyo Zaw Win', count: 28 },
+  // Counts drive rank; award titles are assigned separately (may sit below rank 3).
+  const onboarders: {
+    name: string
+    count: number
+    award?: Ambassador['onboardingAwardTitle']
+  }[] = [
+    { name: 'Min Thu Aung', count: 44, award: '2nd Top Highest Onboarding Award' },
+    { name: 'Htet Aung Shine', count: 38, award: '3rd Top Highest Onboarding Award' },
+    { name: 'Ye Min Oo', count: 31, award: '1st Top Highest Onboarding Award' },
+    { name: 'Phyo Zaw Win', count: 28, award: '2nd Top Highest Onboarding Award' },
     { name: 'Aye Chan Moe', count: 28 },
-    { name: 'Lin Htet Oo', count: 24 },
+    { name: 'Lin Htet Oo', count: 24, award: '3rd Top Highest Onboarding Award' },
     { name: 'Thin Zar Aung', count: 22 },
     { name: 'Kaung Myat', count: 19 },
   ]
-  const creators = ['Ei Mon Kyaw', 'Nandar Moe', 'Su Su Hlaing', 'Myat Noe Oo', 'Hnin Wai Hlaing']
+  const creators: { name: string; award?: Ambassador['youthCreatorAwardTitle'] }[] = [
+    { name: 'Ei Mon Kyaw', award: 'Top View Magnet Winner' },
+    { name: 'Nandar Moe', award: 'Most Engaging Creator Winner' },
+    { name: 'Su Su Hlaing', award: 'Most Creative Content Winner' },
+    { name: 'Myat Noe Oo' },
+    { name: 'Hnin Wai Hlaing', award: 'Most Engaging Creator Winner' },
+  ]
   const interns = ['Soe Wai Lin', 'Zaw Lin Htut', 'Pyae Phyo Naing', 'Thu Zar Win', 'Aung Kyaw Min']
   const permanents = ['Phyu Phyu Win', 'Khin Myat Noe', 'Moe Moe Khaing', 'Sandi Oo', 'Kyaw Swar']
   const bg = ['5ad2f2', 'c5f0fa', '8de4f7', 'b3eaf8'] as const
   const ranks: Ambassador['rank'][] = ['Gold', 'Platinum', 'Silver', 'Gold']
   const years = ['3rd Year', '4th Year', '2nd Year', '3rd Year']
 
-  const groups: { tag: HallTag; people: { name: string; count?: number }[] }[] = [
+  const groups: {
+    tag: HallTag
+    people: {
+      name: string
+      count?: number
+      award?: Ambassador['onboardingAwardTitle']
+      youthAward?: Ambassador['youthCreatorAwardTitle']
+    }[]
+  }[] = [
     { tag: 'top-onboarder', people: onboarders },
-    { tag: 'youth-creator', people: creators.map((name) => ({ name })) },
+    {
+      tag: 'youth-creator',
+      people: creators.map((entry) => ({ name: entry.name, youthAward: entry.award })),
+    },
     { tag: 'internship', people: interns.map((name) => ({ name })) },
     { tag: 'permanent', people: permanents.map((name) => ({ name })) },
   ]
@@ -544,6 +621,14 @@ function buildHallAmbassadors(): Ambassador[] {
         hallTag: group.tag,
         hallTags,
         onboardingCount: entry.count,
+        onboardingAwardTitle: entry.award,
+        youthCreatorAwardTitle: entry.youthAward,
+        badgeGotDates: Object.fromEntries(
+          hallTags.map((tag, tagIndex) => [
+            labelByTag[tag],
+            `${5 + tagIndex * 7} ${['Jan', 'Mar', 'May', 'Jul'][tagIndex % 4]} ${2024 + (index % 3)}`,
+          ]),
+        ) as Ambassador['badgeGotDates'],
       }
       id += 1
       result.push({ ...person, certificates: ambassadorCertificates(person) })
@@ -655,7 +740,7 @@ export const announcements: Announcement[] = [
       'https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=1200&h=640&q=80',
     details:
       'Join the August sprint to log campus sign-ups, coach new students, and climb the Highest On-Boarding leaderboard. Bring your SA ID and a classmate if you can.',
-    highlights: ['Double XP on verified referrals', 'Live leaderboard updates', 'Gold Rank badge for top 10'],
+    highlights: ['Double XP on verified referrals', 'Live leaderboard updates', 'Highest Onboarding badge for top 10'],
     tags: ['Onboarding', 'Sprint', 'Campus'],
     goingCount: 42,
   },
@@ -779,17 +864,17 @@ export const announcements: Announcement[] = [
     isNew: true,
     photo:
       'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&h=640&q=80',
-    companyName: 'Campus Quest',
-    companyLogo: 'CQ',
+    companyName: 'KBZ Bank',
+    companyLogo: 'KBZ',
     employmentType: 'Part-time',
-    industry: 'Education',
+    industry: 'Banking',
     details:
-      'Lead weekly Student Ambassador huddles, track onboarding KPIs, and support partner-school visits across Yangon campuses. You will work closely with the Campus Quest crew to keep weekly targets on track.',
+      'Lead weekly Student Ambassador huddles, track onboarding KPIs, and support partner-school visits across Yangon campuses. You will work closely with the KBZ Bank Campus Quest crew to keep weekly targets on track.',
     responsibilities: [
       'Run weekly Student Ambassador huddles',
       'Track onboarding KPIs and weekly targets',
       'Coordinate partner-school campus visits',
-      'Share updates with the Campus Quest crew',
+      'Share updates with the KBZ Bank campus team',
     ],
     requirements: [
       'Active Student Ambassador in good standing',
@@ -800,7 +885,7 @@ export const announcements: Announcement[] = [
     benefits: [
       'Monthly stipend',
       'Transport allowance for campus visits',
-      'Campus Quest coordinator certificate',
+      'KBZ Bank coordinator certificate',
       'Priority for Hall of Frame features',
     ],
     descriptionFileName: 'Campus-Coordinator-Job-Description.pdf',
@@ -810,7 +895,7 @@ export const announcements: Announcement[] = [
     id: 'j2',
     category: 'job',
     title: 'Youth Creator intern',
-    body: 'Shoot and edit campus stories for Hall of Frame and the Home banner.',
+    body: 'Shoot and edit campus stories for Hall of Frame and KBZ Pay campaigns.',
     date: '08 Sep 2026',
     time: '3-month intern',
     location: 'Remote + Yangon',
@@ -818,17 +903,17 @@ export const announcements: Announcement[] = [
     isNew: true,
     photo:
       'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&h=640&q=80',
-    companyName: 'Hall of Frame Studio',
-    companyLogo: 'HF',
+    companyName: 'KBZ Pay',
+    companyLogo: 'PAY',
     employmentType: 'Full-time',
-    industry: 'Media',
+    industry: 'Fintech',
     details:
-      'Shoot and edit campus stories for Hall of Frame and the Home banner. You will capture SA moments, cut short clips, and help the studio ship weekly creator content.',
+      'Shoot and edit campus stories for Hall of Frame and KBZ Pay campaigns. You will capture SA moments, cut short clips, and help the KBZ Pay creator team ship weekly content.',
     responsibilities: [
       'Capture campus stories and SA moments',
-      'Edit short clips for Hall of Frame',
+      'Edit short clips for Hall of Frame and KBZ Pay',
       'Support Home banner creator content',
-      'Collaborate with studio editors weekly',
+      'Collaborate with the KBZ Pay content team weekly',
     ],
     requirements: [
       'Basic video shooting and editing skills',
@@ -838,9 +923,9 @@ export const announcements: Announcement[] = [
     ],
     benefits: [
       'Full-time intern stipend',
-      'Mentorship from Hall of Frame editors',
+      'Mentorship from KBZ Pay content editors',
       'Credit on published campus stories',
-      'Equipment access at the studio',
+      'KBZ Pay creator experience letter',
     ],
     descriptionFileName: 'Youth-Creator-Intern-Job-Description.pdf',
     descriptionFileUrl: '/jobs/j2-description.pdf',
@@ -862,7 +947,7 @@ export const announcements: Announcement[] = [
     employmentType: 'Part-time',
     industry: 'Banking',
     details:
-      'Help new students complete forms, scan IDs, and log referrals during peak onboarding weeks at the University of Yangon desk. You will be the first smile students meet when they join Campus Quest.',
+      'Help new students complete forms, scan IDs, and log referrals during peak onboarding weeks at the University of Yangon desk. You will be the first smile students meet when they join Campus Quest with KBZ Bank.',
     responsibilities: [
       'Greet students at the onboarding desk',
       'Help complete forms and scan IDs',
@@ -877,7 +962,7 @@ export const announcements: Announcement[] = [
     ],
     benefits: [
       'Shift allowance',
-      'KBZ campus desk experience',
+      'KBZ Bank campus desk experience',
       'Meal voucher on duty days',
       'Letter of recommendation after 8 weeks',
     ],
@@ -893,7 +978,7 @@ export const marketingBanners: MarketingBanner[] = [
       'https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=1200&h=640&q=80',
     kicker: 'Onboarding week',
     title: 'Invite 3 classmates',
-    subtitle: 'Top onboarders earn a Gold Rank badge.',
+    subtitle: 'Top onboarders earn a Highest Onboarding badge.',
   },
   {
     id: 'b2',
@@ -901,7 +986,7 @@ export const marketingBanners: MarketingBanner[] = [
       'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&h=640&q=80',
     kicker: 'Campus crew',
     title: 'SA meetup this Friday',
-    subtitle: 'Train together and unlock Campus Voice.',
+    subtitle: 'Train together and unlock Youth Creator.',
   },
   {
     id: 'b3',

@@ -5,7 +5,15 @@ export function isDocumentImage(url: string) {
   return url.startsWith('data:image/') || /\.(png|jpe?g|gif|webp|svg)$/i.test(url)
 }
 
-export function DocumentViewer({ document, onClose }: { document: ProfileDocument; onClose: () => void }) {
+export function DocumentViewer({
+  document,
+  onClose,
+  canDownload = false,
+}: {
+  document: ProfileDocument
+  onClose: () => void
+  canDownload?: boolean
+}) {
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4" role="dialog" aria-modal>
       <div className="max-h-[85vh] w-full max-w-[430px] overflow-auto rounded-3xl bg-white p-4">
@@ -28,14 +36,16 @@ export function DocumentViewer({ document, onClose }: { document: ProfileDocumen
         ) : (
           <iframe title={document.title} src={document.fileUrl} className="h-[420px] w-full rounded-2xl bg-sky" />
         )}
-        <a
-          href={document.fileUrl}
-          download={document.fileName}
-          className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-primary text-sm font-extrabold text-white"
-        >
-          <Download className="h-4 w-4" />
-          Download
-        </a>
+        {canDownload ? (
+          <a
+            href={document.fileUrl}
+            download={document.fileName}
+            className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-primary text-sm font-extrabold text-white"
+          >
+            <Download className="h-4 w-4" />
+            Download
+          </a>
+        ) : null}
       </div>
     </div>
   )

@@ -1,4 +1,3 @@
-import { hallTagsOf } from './hall'
 import type { Ambassador } from '../types'
 
 export type CareerRole = {
@@ -37,6 +36,26 @@ const PERM_SKILLS = [
   'Event Hosting',
   'Training',
 ]
+
+function normalizeBadge(value: string) {
+  return value.trim().toLowerCase()
+}
+
+/** True when achievement badges include Internship / Intern. */
+export function hasInternshipBadge(badges: string[]): boolean {
+  return badges.some((badge) => {
+    const label = normalizeBadge(badge)
+    return label === 'internship' || label === 'intern' || label.includes('internship')
+  })
+}
+
+/** True when achievement badges include Permanent. */
+export function hasPermanentBadge(badges: string[]): boolean {
+  return badges.some((badge) => {
+    const label = normalizeBadge(badge)
+    return label === 'permanent' || label.includes('permanent')
+  })
+}
 
 function parseDisplayDate(value: string): Date | null {
   const parsed = Date.parse(value)
@@ -91,13 +110,15 @@ function roleBlock(
   }
 }
 
-/** Build LinkedIn-style KBZ career progress for Internship / Permanent. */
+/**
+ * Build LinkedIn-style KBZ career progress.
+ * Only when the student has Internship and/or Permanent achievement badges.
+ */
 export function careerProgressOf(
-  person: Pick<Ambassador, 'id' | 'joinDate' | 'trainingRegion' | 'hallTag' | 'hallTags'>,
+  person: Pick<Ambassador, 'id' | 'joinDate' | 'trainingRegion' | 'badges'>,
 ): CareerExperience | null {
-  const tags = hallTagsOf(person)
-  const hasIntern = tags.includes('internship')
-  const hasPerm = tags.includes('permanent')
+  const hasIntern = hasInternshipBadge(person.badges)
+  const hasPerm = hasPermanentBadge(person.badges)
   if (!hasIntern && !hasPerm) return null
 
   const join = parseDisplayDate(person.joinDate) ?? new Date()
@@ -136,7 +157,7 @@ export function careerProgressOf(
     )
   }
 
-  const earliest = hasIntern ? join : hasPerm ? join : now
+  const earliest = join
   const employmentType = hasPerm ? 'Full-time' : 'Internship'
 
   return {

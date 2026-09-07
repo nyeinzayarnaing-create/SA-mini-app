@@ -11,6 +11,7 @@ const DEMO_ACTIVITY: Record<string, ActivityStatus> = {
   a1: 'expired',
   v2: 'cancelled',
   j1: 'pending',
+  j2: 'expired',
 }
 
 const DEMO_REGISTRATIONS: Record<string, RegistrationInfo> = {
@@ -86,7 +87,7 @@ const DEMO_REGISTRATIONS: Record<string, RegistrationInfo> = {
 }
 
 export const ACTIVITY_STATUS_LABEL: Record<ActivityStatus, string> = {
-  pending: 'Pending Approval',
+  pending: 'Pending',
   approved: 'Approved',
   expired: 'Expired',
   cancelled: 'Cancelled',

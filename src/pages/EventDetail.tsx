@@ -1,4 +1,4 @@
-import { Check, ChevronLeft, Clock, Download, FileText, MapPin } from 'lucide-react'
+import { Building2, Check, ChevronLeft, Clock, Download, FileText, MapPin } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { RegistrationSummary } from '../components/RegistrationSummary'
@@ -62,7 +62,7 @@ export function EventDetail() {
   const ctaLabel = item.category === 'event' ? 'Register' : 'Apply'
   const tags =
     item.tags ??
-    ([item.employmentType, item.industry, item.companyName].filter(Boolean) as string[])
+    ([item.employmentType, item.industry].filter(Boolean) as string[])
   const highlights = item.highlights ?? item.requirements?.slice(0, 3)
 
   return (
@@ -114,6 +114,26 @@ export function EventDetail() {
       >
         <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">{kindLabel}</p>
         <h1 className="mt-1 text-[26px] font-extrabold leading-tight text-[#1B2A4A]">{item.title}</h1>
+
+        {isJob && item.companyName ? (
+          <div className="mt-3 flex items-center gap-3 rounded-2xl border border-line bg-sky px-3 py-2.5">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary text-[11px] font-extrabold tracking-wide text-white">
+              {item.companyLogo ?? item.companyName.slice(0, 3).toUpperCase()}
+            </span>
+            <div className="min-w-0">
+              <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-ink-mid">
+                <Building2 className="h-3.5 w-3.5 text-primary" />
+                Company
+              </p>
+              <p className="mt-0.5 text-[15px] font-extrabold text-ink">{item.companyName}</p>
+              {item.employmentType || item.industry ? (
+                <p className="mt-0.5 text-[12px] font-semibold text-ink-mid">
+                  {[item.employmentType, item.industry].filter(Boolean).join(' · ')}
+                </p>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
 
         <div className="mt-3 space-y-1.5 text-[13px] text-[#8A93A6]">
           <p className="flex items-center gap-2">

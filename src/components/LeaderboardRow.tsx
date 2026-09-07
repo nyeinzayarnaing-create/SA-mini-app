@@ -1,5 +1,6 @@
 import { Crown, GraduationCap, MapPin, Medal, Sparkles, Users } from 'lucide-react'
 import type { Ambassador, HallTag } from '../types'
+import { AchievementTitleBanner } from './AchievementTitleBanner'
 import { AvatarImage } from './AvatarImage'
 import { HallBadgeStack } from './HallBadgeStack'
 
@@ -78,13 +79,6 @@ function photoRing(rank: number) {
   return 'ring-2 ring-white'
 }
 
-function placeLabel(rank: number) {
-  if (rank === 1) return 'Champion'
-  if (rank === 2) return 'Runner-up'
-  if (rank === 3) return '3rd Place'
-  return null
-}
-
 /** Horizontal gamification leaderboard row. */
 export function LeaderboardRow({
   ambassador,
@@ -99,7 +93,8 @@ export function LeaderboardRow({
 }) {
   const count = ambassador.onboardingCount ?? 0
   const isTop = rank <= 3
-  const label = placeLabel(rank)
+  const achievementTitle =
+    preferTag === 'top-onboarder' ? ambassador.onboardingAwardTitle : undefined
 
   return (
     <article
@@ -131,15 +126,6 @@ export function LeaderboardRow({
         <div className="min-w-0 flex-1">
           <div className="flex items-start gap-2">
             <div className="min-w-0 flex-1">
-              {label ? (
-                <p
-                  className={`text-[10px] font-extrabold uppercase tracking-[0.14em] ${
-                    rank === 1 ? 'text-[#C4920A]' : rank === 2 ? 'text-[#6B7280]' : 'text-[#D97706]'
-                  }`}
-                >
-                  {label}
-                </p>
-              ) : null}
               <h3 className="truncate text-[14px] font-extrabold leading-snug text-ink">{ambassador.name}</h3>
               <p className="mt-0.5 font-mono text-[11px] font-semibold text-primary">{ambassador.id}</p>
             </div>
@@ -152,9 +138,10 @@ export function LeaderboardRow({
             </div>
           </div>
 
-          <p className="mt-1.5">
+          <div className="mt-1.5 space-y-1.5">
             <HallBadgeStack ambassador={ambassador} prefer={preferTag} />
-          </p>
+            {achievementTitle ? <AchievementTitleBanner title={achievementTitle} /> : null}
+          </div>
 
           <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[12px] font-semibold text-ink-mid">
             <span className="inline-flex min-w-0 max-w-full items-center gap-1">

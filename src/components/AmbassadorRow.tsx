@@ -1,5 +1,6 @@
 import { GraduationCap, MapPin, Users } from 'lucide-react'
 import type { Ambassador, HallTag } from '../types'
+import { AchievementTitleBanner } from './AchievementTitleBanner'
 import { AvatarImage } from './AvatarImage'
 import { HallBadgeStack } from './HallBadgeStack'
 
@@ -13,6 +14,8 @@ export function AmbassadorRow({
   preferTag?: HallTag
 }) {
   const active = ambassador.status === 'Active'
+  const achievementTitle =
+    preferTag === 'youth-creator' ? ambassador.youthCreatorAwardTitle : undefined
 
   return (
     <article className="rounded-2xl border border-line bg-white p-4 shadow-[0_6px_18px_rgba(0,84,166,0.06)]">
@@ -36,9 +39,10 @@ export function AmbassadorRow({
           </div>
           <p className="mt-0.5 font-mono text-[12px] font-semibold text-primary">{ambassador.id}</p>
           {showHallTag ? (
-            <p className="mt-1.5">
+            <div className="mt-1.5 space-y-1.5">
               <HallBadgeStack ambassador={ambassador} prefer={preferTag} />
-            </p>
+              {achievementTitle ? <AchievementTitleBanner title={achievementTitle} /> : null}
+            </div>
           ) : null}
           <p className="mt-1 flex items-center gap-1 text-[13px] font-semibold text-ink-mid">
             <GraduationCap className="h-3.5 w-3.5 shrink-0 text-primary" />

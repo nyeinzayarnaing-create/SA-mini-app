@@ -1,18 +1,26 @@
 import { Link } from 'react-router-dom'
+import { hallBadgesOf } from '../lib/hall'
 import { profileBanner } from '../lib/profileBanner'
 import type { Ambassador } from '../types'
+import { TrophyTag } from './TrophyTag'
 
 type Props = {
   ambassador: Ambassador
   action?: 'status' | 'view-profile'
+  showAchievements?: boolean
 }
 
-export function ProfileCard({ ambassador, action = 'status' }: Props) {
+export function ProfileCard({
+  ambassador,
+  action = 'status',
+  showAchievements = true,
+}: Props) {
   const active = ambassador.status === 'Active'
   const banner = profileBanner(ambassador)
   const bio = [ambassador.schoolName, ambassador.trainingRegion, ambassador.saBatch]
     .filter(Boolean)
     .join(' · ')
+  const badges = hallBadgesOf(ambassador)
 
   return (
     <section className="overflow-hidden rounded-[28px] bg-white shadow-[0_12px_32px_rgba(0,84,166,0.08)]">
@@ -47,6 +55,14 @@ export function ProfileCard({ ambassador, action = 'status' }: Props) {
           <Link to="/profile/view" className="mt-3 inline-block text-[13px] font-bold text-primary">
             View profile
           </Link>
+        ) : null}
+
+        {showAchievements && badges.length > 0 ? (
+          <div className="mt-4 flex flex-wrap justify-center gap-1.5">
+            {badges.map((badge) => (
+              <TrophyTag key={badge} label={badge} />
+            ))}
+          </div>
         ) : null}
       </div>
     </section>

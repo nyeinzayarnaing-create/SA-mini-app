@@ -337,6 +337,32 @@ body {
   animation-delay: 0.5s;
 }
 
+/* Profile Achievement — gamified quest panels */
+.profile-achieve-panel {
+  animation: lb-achieve-in 0.5s cubic-bezier(0.34, 1.45, 0.64, 1) both;
+}
+
+.profile-achieve-shine {
+  background: linear-gradient(
+    115deg,
+    transparent 28%,
+    rgba(255, 255, 255, 0.55) 48%,
+    transparent 68%
+  );
+  transform: translateX(-130%);
+  animation: lb-shine-sweep 3.6s ease-in-out 0.5s infinite;
+  mix-blend-mode: soft-light;
+}
+
+/* Achievement Title — stamp seal + title */
+.lb-achieve {
+  animation: lb-achieve-in 0.4s ease-out both;
+}
+
+.lb-achieve-stamp {
+  animation: lb-achieve-stamp 2.8s ease-in-out infinite;
+}
+
 @keyframes lb-rise-in {
   0% {
     opacity: 0;
@@ -345,6 +371,27 @@ body {
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes lb-achieve-in {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes lb-achieve-stamp {
+  0%,
+  100% {
+    transform: scale(1) rotate(-4deg);
+  }
+  50% {
+    transform: scale(1.04) rotate(3deg);
   }
 }
 
@@ -446,7 +493,11 @@ body {
   .lb-medal-tilt,
   .lb-photo-glow,
   .lb-score-pop,
-  .lb-sparkle {
+  .lb-sparkle,
+  .lb-achieve,
+  .lb-achieve-stamp,
+  .profile-achieve-panel,
+  .profile-achieve-shine {
     animation: none !important;
   }
 

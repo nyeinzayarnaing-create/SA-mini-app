@@ -2,6 +2,7 @@ import { ChevronLeft, Pencil } from 'lucide-react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { CertificateList } from '../components/CertificateList'
 import { KpiAchievement } from '../components/KpiAchievement'
+import { ProfileAchievements } from '../components/ProfileAchievements'
 import { useProfile } from '../context/ProfileContext'
 import { ambassadorAge } from '../data/mock'
 import { profileBanner } from '../lib/profileBanner'
@@ -87,7 +88,9 @@ export function ProfileView() {
         <KpiAchievement />
       </div>
 
-      <CertificateList documents={user.certificates ?? []} badges={user.badges} ambassador={user} />
+      <ProfileAchievements ambassador={user} />
+
+      <CertificateList documents={user.certificates ?? []} canDownload />
     </main>
   )
 }

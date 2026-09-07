@@ -1,11 +1,10 @@
 import { ChevronLeft } from 'lucide-react'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
-import { CareerProgress } from '../components/CareerProgress'
 import { CertificateList } from '../components/CertificateList'
+import { ProfileAchievements } from '../components/ProfileAchievements'
 import { ProfileCard } from '../components/ProfileCard'
 import { useProfile } from '../context/ProfileContext'
 import { ambassadors } from '../data/mock'
-import { careerProgressOf } from '../lib/career'
 
 export function AmbassadorProfile() {
   const { id } = useParams()
@@ -15,8 +14,6 @@ export function AmbassadorProfile() {
 
   if (!person) return <Navigate to="/ambassadors" replace />
   if (person.id === user.id) return <Navigate to="/profile" replace />
-
-  const career = careerProgressOf(person)
 
   return (
     <main className="min-h-svh bg-sky px-4 pb-8 pt-[max(1rem,env(safe-area-inset-top))]">
@@ -36,19 +33,8 @@ export function AmbassadorProfile() {
       </header>
 
       <ProfileCard ambassador={person} />
-
-      {career ? (
-        <section className="mt-4">
-          <h2 className="mb-2 text-sm font-bold text-ink">Career Progress</h2>
-          <CareerProgress experience={career} />
-        </section>
-      ) : null}
-
-      <CertificateList
-        documents={person.certificates ?? []}
-        badges={person.badges}
-        ambassador={person}
-      />
+      <ProfileAchievements ambassador={person} />
+      <CertificateList documents={person.certificates ?? []} />
     </main>
   )
 }

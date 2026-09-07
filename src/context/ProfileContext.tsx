@@ -1,8 +1,11 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
 import { currentUser as seedUser } from '../data/mock'
+import { ambassadorCertificates } from '../lib/certificates'
+import { hallBadgesOf } from '../lib/hall'
 import type { Ambassador } from '../types'
 
-const STORAGE_KEY = 'sa-profile'
+/** Bump to drop stale local profiles that still carry Gold Rank / Campus Voice. */
+const STORAGE_KEY = 'sa-profile-v4'
 
 type ProfileContextValue = {
   user: Ambassador
@@ -11,14 +14,33 @@ type ProfileContextValue = {
 
 const ProfileContext = createContext<ProfileContextValue | null>(null)
 
+function normalizeUser(person: Ambassador): Ambassador {
+  const hallTags = person.hallTags?.length ? person.hallTags : seedUser.hallTags
+  const withTags = {
+    ...person,
+    hallTags,
+    hallTag: person.hallTag ?? hallTags?.[0],
+    onboardingCount: person.onboardingCount ?? seedUser.onboardingCount,
+    onboardingAwardTitle: person.onboardingAwardTitle ?? seedUser.onboardingAwardTitle,
+    youthCreatorAwardTitle: person.youthCreatorAwardTitle ?? seedUser.youthCreatorAwardTitle,
+    badgeGotDates: person.badgeGotDates ?? seedUser.badgeGotDates,
+  }
+  const badges = hallBadgesOf(withTags)
+  return {
+    ...withTags,
+    badges,
+    certificates: ambassadorCertificates({ ...withTags, badges }),
+  }
+}
+
 function loadUser(): Ambassador {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return { ...seedUser }
+    if (!raw) return normalizeUser({ ...seedUser })
     const stored = JSON.parse(raw) as Partial<Ambassador>
-    return { ...seedUser, ...stored }
+    return normalizeUser({ ...seedUser, ...stored })
   } catch {
-    return { ...seedUser }
+    return normalizeUser({ ...seedUser })
   }
 }
 
@@ -30,7 +52,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
       user,
       updateUser: (patch: Partial<Ambassador>) =>
         setUser((prev) => {
-          const next = { ...prev, ...patch }
+          const next = normalizeUser({ ...prev, ...patch })
           try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
           } catch {

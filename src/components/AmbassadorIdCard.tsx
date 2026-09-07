@@ -1,6 +1,7 @@
 import { ChevronRight } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { hallBadgesOf } from '../lib/hall'
 import type { Ambassador } from '../types'
 import { CoinIllu, MiniTrophyBadge, StarIllu } from './Illustrations'
 
@@ -12,6 +13,7 @@ type Props = {
 
 export function AmbassadorIdCard({ ambassador, to, size = 'hero' }: Props) {
   const photoSize = size === 'full' ? 'h-24 w-24' : 'h-20 w-20'
+  const badges = hallBadgesOf(ambassador)
 
   const identity = (
     <>
@@ -44,31 +46,34 @@ export function AmbassadorIdCard({ ambassador, to, size = 'hero' }: Props) {
   return (
     <article className="id-card rounded-2xl p-4 shadow-[0_10px_28px_rgba(0,84,166,0.12)]">
       <div className={to ? 'id-card-press' : undefined}>
-      <StarIllu className="illu-twinkle pointer-events-none absolute -right-1 -top-1 h-9 w-9 opacity-90" />
-      <CoinIllu className="illu-coin pointer-events-none absolute -bottom-1 right-10 h-8 w-8 opacity-80" />
+        <StarIllu className="illu-twinkle pointer-events-none absolute -right-1 -top-1 h-9 w-9 opacity-90" />
+        <CoinIllu className="illu-coin pointer-events-none absolute -bottom-1 right-10 h-8 w-8 opacity-80" />
 
-      {to ? (
-        <Link to={to} className="relative z-[1] block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-secondary">
-          {identity}
-        </Link>
-      ) : (
-        identity
-      )}
+        {to ? (
+          <Link
+            to={to}
+            className="relative z-[1] block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+          >
+            {identity}
+          </Link>
+        ) : (
+          identity
+        )}
 
-      <div className="relative z-[1] mt-3">
-        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink-mid">Achievement</p>
-        <div className="mt-2 flex flex-wrap gap-1.5">
-          {ambassador.badges.map((badge, index) => (
-            <AchievementBadge key={badge} label={badge} delayMs={220 + index * 120} />
-          ))}
+        <div className="relative z-[1] mt-3">
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink-mid">Achievement</p>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {badges.map((badge, index) => (
+              <AchievementBadge key={badge} label={badge} delayMs={220 + index * 120} />
+            ))}
+          </div>
         </div>
-      </div>
 
-      {to ? (
-        <p className="relative z-[1] mt-2 text-center text-[10px] font-semibold uppercase tracking-[0.18em] text-ink/40">
-          Tap to manage profile
-        </p>
-      ) : null}
+        {to ? (
+          <p className="relative z-[1] mt-2 text-center text-[10px] font-semibold uppercase tracking-[0.18em] text-ink/40">
+            Tap to manage profile
+          </p>
+        ) : null}
       </div>
     </article>
   )
