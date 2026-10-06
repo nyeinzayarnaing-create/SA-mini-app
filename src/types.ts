@@ -26,7 +26,7 @@ export type Ambassador = {
   certificates?: ProfileDocument[]
   banner?: string
   hallTag?: HallTag
-  /** All Hall of Frame categories this ambassador belongs to (3–4 possible). */
+  /** All Hall of Fame categories this ambassador belongs to (3–4 possible). */
   hallTags?: HallTag[]
   onboardingCount?: number
   /**

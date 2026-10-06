@@ -32,7 +32,7 @@ export function primaryHallTag(person: Pick<Ambassador, 'hallTag' | 'hallTags'>)
   return hallTagsOf(person)[0]
 }
 
-/** Only the four Hall of Frame badges. Prefer hallTags when present. */
+/** Only the four Hall of Fame badges. Prefer hallTags when present. */
 export function hallBadgesOf(
   person: Pick<Ambassador, 'badges' | 'hallTag' | 'hallTags'>,
 ): HallBadge[] {

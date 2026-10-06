@@ -92,7 +92,7 @@ export function HallOfFrame() {
       <header className="mb-4 flex items-start justify-between gap-3">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">Campus Quest</p>
-          <h1 className="text-xl font-extrabold text-ink">Hall of Frame</h1>
+          <h1 className="text-xl font-extrabold text-ink">Hall of Fame</h1>
           <p className="mt-1 text-xs text-ink-mid">
             {filtered.length} {HALL_TAG_LABEL[tab]}
           </p>
