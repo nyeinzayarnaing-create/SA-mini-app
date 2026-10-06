@@ -73,10 +73,10 @@ function KpiStar({ filled }: { filled: boolean }) {
 }
 
 function KpiDetailCard({ item }: { item: KpiItem }) {
-  const pct = Math.min(100, Math.round((item.current / item.target) * 100))
+  const progress = item.target > 0 ? Math.min(100, (item.current / item.target) * 100) : 0
   const bar =
     item.status === 'completed' ? 'bg-success' : item.status === 'in-progress' ? 'bg-primary' : 'bg-slate-300'
-  const pctColor =
+  const countColor =
     item.status === 'completed' ? 'text-success' : item.status === 'in-progress' ? 'text-primary' : 'text-slate-400'
   const muted = item.status === 'locked'
 
@@ -103,17 +103,14 @@ function KpiDetailCard({ item }: { item: KpiItem }) {
             ) : null}
           </div>
           <div className="mt-2 flex items-end justify-between gap-2">
-            <p className={`text-xs ${muted ? 'text-slate-400' : 'text-ink'}`}>
-              <span className="text-sm font-extrabold">{item.current}</span>
-              <span className="text-ink-mid">
-                {' '}
-                / {item.target} {item.unit}
-              </span>
+            <p className={`text-xs ${muted ? 'text-slate-400' : 'text-ink-mid'}`}>{item.unit}</p>
+            <p className={`text-sm font-extrabold tabular-nums ${countColor}`}>
+              {item.current}
+              <span className={muted ? 'text-slate-400' : 'text-ink-mid'}> / {item.target}</span>
             </p>
-            <p className={`text-sm font-extrabold ${pctColor}`}>{pct}%</p>
           </div>
           <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-200">
-            <div className={`h-full rounded-full ${bar}`} style={{ width: `${pct}%` }} />
+            <div className={`h-full rounded-full ${bar}`} style={{ width: `${progress}%` }} />
           </div>
         </div>
       </div>
